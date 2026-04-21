@@ -1,169 +1,231 @@
-🚀 Immersive Rural Transit Tracker (3D)
+# 🚌 Real-Time-Transport-Tracking-for-Small-Cities
 
-🌍 Overview
+> A production-ready, real-time bus tracking platform for small cities and rural areas — with three authenticated portals, live bus simulation, and a full Supabase backend.
 
-Immersive Rural Transit Tracker is a real-time public transportation tracking and management system designed to improve transit efficiency in rural and small-city environments.
+![Tech Stack](https://img.shields.io/badge/React-TypeScript-blue?style=flat-square&logo=react)
+![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E?style=flat-square&logo=supabase)
+![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind%20CSS%20v4-38BDF8?style=flat-square&logo=tailwindcss)
+![Leaflet](https://img.shields.io/badge/Maps-Leaflet.js-199900?style=flat-square&logo=leaflet)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 
-The system provides live bus tracking, ETA predictions, occupancy monitoring, and analytics dashboards, enabling better decision-making for passengers, drivers, and administrators.
+---
 
-🎯 Problem Statement
+## 📌 Overview
 
-Public transportation systems in many regions face significant challenges:
+**Immersive Rural Transit Tracker** is a full-featured web platform that brings real-time bus tracking to underserved transit networks. It features three distinct authenticated user portals — **Public Commuter**, **Driver**, and **Admin** — backed by Supabase Edge Functions, a live bus simulation engine, and interactive 2D/3D map views.
 
-🚫 Lack of real-time tracking
-🚫 Unpredictable arrival times
-🚫 Overcrowding issues
-🚫 No centralized monitoring system
+Demo data is pre-seeded with **Bangalore, India** transit routes for instant exploration.
 
-These problems result in inefficiency, delays, and poor user experience.
+---
 
-💡 Solution
+## ✨ Features
 
-This project introduces a smart transit platform that integrates real-time GPS data, analytics, and user-friendly interfaces to create a connected ecosystem for transportation management.
+### 🧑‍💼 Three Authenticated Portals
+| Portal | Role | Key Actions |
+|---|---|---|
+| **Public Commuter** | Passenger | Live bus tracking, ETAs, route filters, chat support |
+| **Driver** | Assigned driver | Trip controls, occupancy updates, incident reporting |
+| **Admin** | System operator | Bus/route/driver management, analytics, live oversight |
 
-It bridges the gap between:
-👤 Passengers
-🧑‍✈️ Drivers
-🛠️ Administrators
+### 🗺️ Live Map Views
+- **2D Map** — OpenStreetMap via Leaflet.js with persistent animated bus markers, route polylines, stop popups
+- **3D View** — Custom SVG-based perspective renderer with drag-to-rotate, auto-rotate, zoom, and floating bus animations
 
-✨ Key Features
-🧑‍🤝‍🧑 Passenger Module
-📍 Real-time bus tracking (live map view)
-⏱️ Accurate ETA predictions
-👥 Occupancy levels (Low / Medium / High)
-🗺️ 2D Map & 3D Visualization
-🔄 Auto-refresh updates
-🎯 Route-based filtering
-🚍 Driver Module
-▶️ Start / Stop trip functionality
-📡 Update real-time location
-📊 Update occupancy status
-📍 View route stops
-🧾 Trip monitoring dashboard
-🛠️ Admin Module
-📊 System overview dashboard
-🚌 Fleet management
-🧭 Route management
-👨‍✈️ Driver assignment
-🚨 Incident tracking system
-📈 Analytics & performance monitoring
-📊 Analytics Dashboard
+### 🚍 Real-Time Bus Simulation
+- Tick-based simulation engine at ~12fps (80ms interval)
+- Haversine geometry for accurate distance/heading calculation
+- Buses smoothly interpolate between stops along routes
+- Dynamic ETA recalculation based on speed and remaining distance
+- Server position sync with seamless segment re-anchoring
 
-Provides insights such as:
-📈 Average daily ridership
-⏱️ On-time performance
-🚌 Fleet utilization
-📊 Peak travel times
-📍 Route distribution
-📉 Demand patterns
+### 🔐 Authentication
+- Email/password signup and login
+- Google OAuth (Supabase)
+- Role-based routing: `user → public`, `driver → driver`, `admin → admin`
+- Persistent sessions with auto token refresh
+- Driver invite code system for controlled onboarding
 
-🏗️ System Architecture
+### 📊 Admin Dashboard
+- KPI overview: active buses, open incidents, driver count
+- Bus, route, and driver CRUD management
+- Incident tracking with status workflow (open → in-progress → resolved)
+- Analytics charts (Recharts): utilization, occupancy distribution, on-time performance
+- Live tracking overview map
+- Demo data seeder with one click
 
-The application follows a modern full-stack architecture:
+---
 
-🖥️ Frontend Layer
+## 🛠️ Tech Stack
 
-User interfaces for passengers, drivers, and admins
+| Layer | Technology |
+|---|---|
+| Frontend | React + TypeScript |
+| Styling | Tailwind CSS v4 |
+| Routing | react-router |
+| Backend | Supabase Edge Functions (Hono) |
+| Database | Supabase KV Store |
+| Auth | Supabase Auth (email + Google OAuth) |
+| Maps | Leaflet.js (CDN) |
+| Icons | Lucide React |
+| Animations | motion/react |
+| Charts | Recharts |
 
-⚙️ Backend Layer
+---
 
-Handles API requests, authentication, and business logic
+## 🗂️ Project Structure
 
-🗄️ Database Layer
+```
+├── components/
+│   ├── LandingPage.tsx          # Marketing home page
+│   ├── LoginPortalSelector.tsx  # Portal entry selector
+│   ├── PublicInterface.tsx      # Commuter tracking view
+│   ├── DriverDashboard.tsx      # Driver controls
+│   ├── AdminDashboard.tsx       # Admin tabbed interface
+│   ├── OpenStreetMap.tsx        # 2D Leaflet map
+│   ├── ThreeDView.tsx           # Custom SVG 3D renderer
+│   ├── ChatSupport.tsx          # Simulated chat overlay
+│   ├── debug-panel.tsx          # Dev debug panel
+│   └── ui/                      # Full shadcn-style component library
+├── hooks/
+│   └── useBusSimulation.ts      # Core simulation engine
+├── utils/
+│   ├── auth.ts                  # Supabase auth helpers
+│   └── api.ts                   # API layer with token refresh
+├── types/
+│   └── index.ts                 # Shared TypeScript types
+├── data/
+│   └── mockData.ts              # Bangalore demo seed data
+├── styles/
+│   └── globals.css              # Tailwind v4 + custom keyframes
+└── supabase/
+    └── functions/
+        └── server/
+            ├── index.tsx        # Hono Edge Function server
+            └── kv_store.tsx     # Deno KV helpers
+```
 
-Stores users, buses, routes, trips, and analytics
+---
 
-📡 GPS Integration
+## 🚀 Getting Started
 
-Provides real-time location updates
-🗄️ Database Design
+### Prerequisites
+- Node.js 18+
+- A [Supabase](https://supabase.com) project
 
-The system uses a relational database model with key entities:
+### 1. Clone the repository
+```bash
+git clone https://github.com/your-username/rural-transit-tracker.git
+cd rural-transit-tracker
+```
 
-👤 Users (Passengers, Drivers, Admins)
-🚌 Buses
-🛣️ Routes
-📍 Route Stops
-📊 Trips
-📡 GPS Locations
-🚨 Incidents
+### 2. Install dependencies
+```bash
+npm install
+```
 
-Relationships are maintained using primary and foreign keys to ensure data consistency.
+### 3. Set up environment variables
+Create a `.env` file in the root:
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key-here
+```
 
-🔄 Working Flow
+> ⚠️ Never commit your `.env` file. The app will show an **Environment Setup Modal** automatically if credentials are missing.
 
-1️⃣ Driver starts the trip
-2️⃣ GPS sends live location data
-3️⃣ Backend processes and updates database
-4️⃣ ETA is calculated dynamically
-5️⃣ Users view real-time updates on dashboard
+### 4. Deploy the Edge Function
+```bash
+supabase functions deploy server
+```
 
-⚙️ Functional Requirements
+### 5. Start the development server
+```bash
+npm run dev
+```
 
-✔️ Real-time tracking
-✔️ ETA calculation
-✔️ Multi-route support
-✔️ Occupancy tracking
-✔️ Role-based access
-✔️ Analytics generation
+### 6. Seed demo data
+Once logged in as admin, open the **Debug Panel** (⚙️ bottom-right) and click **Init Demo Data** to populate Bangalore transit routes, buses, stops, and drivers.
 
-🔐 Non-Functional Requirements
+---
 
-⚡ High performance
-📈 Scalability
-🔒 Secure authentication
-📱 Responsive UI
-🟢 High availability
-♿ Accessibility support
+## 🔑 Demo Credentials
 
-🛠️ Tech Stack
-🎨 Frontend
-⚛️ React (TypeScript)
-🎨 Tailwind CSS
-⚙️ Backend
-☁️ Supabase (Backend-as-a-Service)
-🗄️ PostgreSQL
-🌐 APIs & Tools
-🗺️ Maps API
-📍 Geolocation API
-📊 Visualization
-📈 Charts & Graphs
-🎬 3D UI components
-📸 Screenshots
-Landing Page
-Features Section
-Live Bus Tracking Dashboard
-Map View (2D)
-Driver Panel
-Admin Dashboard
-Analytics Dashboard
-📈 Key Highlights
+After seeding demo data, use these test accounts:
 
-✨ Real-time synchronization
-🔐 Role-based system
-☁️ Cloud-powered backend
-📊 Data-driven insights
-📱 Responsive design
+| Role | Email | Password |
+|---|---|---|
+| Admin | admin@transit.demo | admin123 |
+| Driver | driver@transit.demo | driver123 |
+| Commuter | user@transit.demo | user123 |
 
-📚 Learning Outcomes
+> Driver accounts require a valid invite code — generate one from the Admin → Driver Management panel.
 
-💻 Full-stack development
-⚙️ Real-time systems
-🗄️ Database design
-🔗 API integration
-📊 Data analytics
-🎨 UI/UX design
+---
 
-🔮 Future Enhancements
+## 📍 Demo Data (Bangalore, India)
 
-🚀 AI-based ETA prediction
-🔔 Push notifications
-📱 Mobile application
-🌆 Large-scale city deployment
-📊 Advanced analytics
+The seeded dataset includes:
 
-🏁 Conclusion
+- **8 Bus Stops**: Majestic Bus Station, MG Road Junction, Indiranagar Metro, Victoria Hospital, Commercial Street, Koramangala, Cubbon Park, Electronic City
+- **3 Routes**: City Center Loop (blue), Hospital Express (green), IT Corridor Route (yellow)
+- **4 Buses** with live speed, heading, occupancy, and ETA values
+- **5 Drivers** assigned to buses
+- **Sample Incidents**: delay, complaint, and breakdown reports
 
-This project demonstrates how technology can transform public transportation systems by making them more efficient, transparent, and user-friendly.
+---
 
-It provides a strong foundation for building smart city transportation solutions.
+## 🧩 Key Architecture Decisions
+
+### Dual-Header Auth Pattern
+All API requests send:
+- `Authorization: Bearer <anonKey>` — satisfies Supabase infrastructure
+- `X-User-Token: <userJWT>` — read by Hono for role-based access control
+
+### Infinite Loop Prevention
+- `useMemo` stabilizes `filteredBuses` and `activeRoutes` arrays passed to the simulation hook
+- The simulation's sync `useEffect` only mutates refs, never calls `setState`
+- The animation interval has an empty dependency array and reads live data from refs
+
+### Persistent Leaflet Markers
+- Bus markers are stored in a `Map<busId, LeafletMarker>` ref
+- Positions update via `marker.setLatLng()` in-place — never recreated per tick
+- Rotation applied via DOM `style.transform` with CSS transition for smooth heading changes
+
+### Token Refresh & Error Handling
+- On any 401 response: attempt `supabase.auth.refreshSession()`, retry once
+- On continued failure: sign out and dispatch `auth-expired` window event
+- Clipboard writes always use `try/catch` with `document.execCommand('copy')` fallback
+
+---
+
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Commit your changes: `git commit -m 'Add: your feature description'`
+4. Push to the branch: `git push origin feature/your-feature-name`
+5. Open a Pull Request
+
+Please ensure your code follows the existing TypeScript patterns and passes linting before submitting.
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgements
+
+- [Supabase](https://supabase.com) — backend, auth, and edge functions
+- [Leaflet.js](https://leafletjs.com) — open-source mapping
+- [OpenStreetMap](https://www.openstreetmap.org) — map tile data
+- [Lucide Icons](https://lucide.dev) — icon set
+- [Recharts](https://recharts.org) — charting library
+
+---
+
+<p align="center">Built with ❤️ for better rural transit connectivity</p>
